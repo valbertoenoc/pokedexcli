@@ -8,7 +8,12 @@ import (
 	"net/http"
 )
 
-func GetLocations(url string) (LocationListResponse, error) {
+func (c *Client) GetLocations(pageURL *string) (LocationListResponse, error) {
+	url := BASE_URL + "/location-area"
+	if pageURL != nil {
+		url = *pageURL
+	}
+
 	res, err := http.Get(url)
 	if err != nil {
 		return LocationListResponse{}, fmt.Errorf("error fetching locations: %v", err)

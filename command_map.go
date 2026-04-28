@@ -1,24 +1,18 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-
-	"github.com/valbertoenoc/pokedexcli/internal/pokeapi"
 )
 
-func commandMapf(config *config) error {
-	locationURL := pokeapi.LocationURL
-	if config.nextURL != nil {
-		fmt.Printf("using nextURL %v:", &locationURL)
-		locationURL = *config.nextURL
-	}
-
-	locationResponse, err := pokeapi.GetLocations(locationURL)
+func commandMapf(cfg *config) error {
+	locationResponse, err := cfg.pokeapiClient.GetLocations(cfg.nextURL)
 	if err != nil {
 		return fmt.Errorf("could not fetch locations %v", err)
 	}
 
-	config.nextURL = &locationResponse.Next
+	cfg.nextURL = locationResponse.Next
+	cfg.previousURL = locationResponse.Previous
 
 	for _, location := range locationResponse.Results {
 		fmt.Printf("location-> %s\n", location.Name)
@@ -27,19 +21,17 @@ func commandMapf(config *config) error {
 	return nil
 }
 
-func commandMapb(config *config) error {
-	locationURL := pokeapi.LocationURL
-	if config.previousURL != nil {
-		fmt.Printf("using previousURL %v:", &locationURL)
-		locationURL = *config.nextURL
+func commandMapb(cfg *config) error {
+	if cfg.previousURL == nil {
+		return errors.New("You're on the first page.")
 	}
-
-	locationResponse, err := pokeapi.GetLocations(locationURL)
+	locationResponse, err := cfg.pokeapiClient.GetLocations(cfg.previousURL)
 	if err != nil {
-		return fmt.Errorf("could not fetch locations %v", err)
+		return err
 	}
 
-	config.previousURL = locationResponse.Previous
+	cfg.nextURL = locationResponse.Next
+	cfg.previousURL = locationResponse.Previous
 
 	for _, location := range locationResponse.Results {
 		fmt.Printf("location-> %s\n", location.Name)
