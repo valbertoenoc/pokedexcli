@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/valbertoenoc/pokedexcli/internal/pokeapi"
 )
 
-func startRepl() {
+func startRepl(cfg *config) {
 	reader := bufio.NewScanner(os.Stdin)
 
-	config := &Config{}
 	for {
 		fmt.Print("Pokedex > ")
 		reader.Scan()
@@ -28,7 +29,7 @@ func startRepl() {
 			continue
 		}
 
-		err := cliCommand.callback(config)
+		err := cliCommand.callback(cfg)
 		if err != nil {
 			fmt.Printf("Error executing command %s: %v\n", commandName, err)
 		}
@@ -43,12 +44,13 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*Config) error
+	callback    func(*config) error
 }
 
-type Config struct {
-	nextURL     *string
-	previousURL *string
+type config struct {
+	pokeapiClient pokeapi.Client
+	nextURL       *string
+	previousURL   *string
 }
 
 func getCommands() map[string]cliCommand {
@@ -66,7 +68,7 @@ func getCommands() map[string]cliCommand {
 		"map": {
 			name:        "map",
 			description: "Fetches batch of 20 next location areas.",
-			callback:    commandMap,
+			callback:    commandMapf,
 		},
 		"mapb": {
 			name:        "map",
