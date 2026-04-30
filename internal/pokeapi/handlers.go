@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetLocations(pageURL *string) (ListLocationResponse, error) {
+func (c *Client) ListLocation(pageURL *string) (ListLocationResponse, error) {
 	url := BASE_URL + "/location-area"
 	if pageURL != nil {
 		url = *pageURL
@@ -42,7 +42,7 @@ func (c *Client) GetLocations(pageURL *string) (ListLocationResponse, error) {
 	return locationResponse, nil
 }
 
-func (c *Client) GetLocationAreaPokemon(area string) (ListAreaPokemonResponse, error) {
+func (c *Client) GetLocationArea(area string) (ListAreaPokemonResponse, error) {
 	url := BASE_URL + "location-area/" + area
 
 	var body []byte
