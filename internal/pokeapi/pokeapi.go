@@ -5,7 +5,7 @@ const (
 	BASE_URL = "https://pokeapi.co/api/v2/"
 )
 
-type LocationListResponse struct {
+type ListLocationResponse struct {
 	Count    int            `json:"count"`
 	Next     *string        `json:"next"`
 	Previous *string        `json:"previous"`
@@ -15,4 +15,16 @@ type LocationListResponse struct {
 type LocationArea struct {
 	Name string `json:"name"`
 	URL  string `json:"url"`
+}
+
+type ListAreaPokemonResponse struct {
+	PokemonEncounters []PokemonEncounter `json:"pokemon_encounters"`
+}
+
+type PokemonEncounter struct {
+	Pokemon Pokemon `json:"pokemon"`
+}
+
+type Pokemon struct {
+	Name string `json:"name"`
 }

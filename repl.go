@@ -22,6 +22,10 @@ func startRepl(cfg *config) {
 		}
 
 		commandName := words[0]
+		args := []string{}
+		if len(words) > 1 {
+			args = words[1:]
+		}
 
 		cliCommand, ok := getCommands()[commandName]
 		if !ok {
@@ -29,7 +33,7 @@ func startRepl(cfg *config) {
 			continue
 		}
 
-		err := cliCommand.callback(cfg)
+		err := cliCommand.callback(cfg, args...)
 		if err != nil {
 			fmt.Printf("Error executing command %s: %v\n", commandName, err)
 		}
@@ -44,7 +48,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(cfg *config, args ...string) error
 }
 
 type config struct {
@@ -69,6 +73,11 @@ func getCommands() map[string]cliCommand {
 			name:        "map",
 			description: "Fetches batch of 20 previous location areas.",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "map",
+			description: "Fetches batch of 20 previous location areas.",
+			callback:    commandExplore,
 		},
 		"exit": {
 			name:        "exit",

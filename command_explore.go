@@ -1,0 +1,20 @@
+package main
+
+import (
+	"fmt"
+)
+
+func commandExplore(cfg *config, args ...string) error {
+	area := string(args[0])
+	fmt.Printf("Exploring %s\n", area)
+	pokemonList, err := cfg.pokeapiClient.GetLocationAreaPokemon(area)
+	if err != nil {
+		return fmt.Errorf("error fetching pokemon list: %v", err)
+	}
+	fmt.Println("Found Pokemon:")
+	for _, encounter := range pokemonList.PokemonEncounters {
+		fmt.Printf("- %s\n", encounter.Pokemon.Name)
+	}
+
+	return nil
+}
