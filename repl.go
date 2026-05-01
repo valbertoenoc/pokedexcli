@@ -52,9 +52,10 @@ type cliCommand struct {
 }
 
 type config struct {
-	pokeapiClient pokeapi.Client
-	nextURL       *string
-	previousURL   *string
+	pokeapiClient   pokeapi.Client
+	capturedPokemon map[string]pokeapi.Pokemon
+	nextURL         *string
+	previousURL     *string
 }
 
 func getCommands() map[string]cliCommand {
@@ -65,19 +66,29 @@ func getCommands() map[string]cliCommand {
 			callback:    commandHelp,
 		},
 		"mapf": {
-			name:        "map",
+			name:        "mapf",
 			description: "Fetches batch of 20 next location areas.",
 			callback:    commandMapf,
 		},
 		"mapb": {
-			name:        "map",
+			name:        "mapb",
 			description: "Fetches batch of 20 previous location areas.",
 			callback:    commandMapb,
 		},
 		"explore": {
-			name:        "map",
-			description: "Fetches batch of 20 previous location areas.",
+			name:        "explore <location_name>",
+			description: "Fetches list of pokemon present in the area.",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch <pokemon_name>",
+			description: "Attempt to catche Pokemon.",
+			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect <pokemon_name>",
+			description: "Display detailed Pokemon data.",
+			callback:    commandInspect,
 		},
 		"exit": {
 			name:        "exit",
